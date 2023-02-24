@@ -89,8 +89,6 @@ tyhle ctyri obsahuji vypocitane jednotlive scaffoldy (murco, generic, csk)
 
 
 
-EC50:
-
 IC50:
 
 
