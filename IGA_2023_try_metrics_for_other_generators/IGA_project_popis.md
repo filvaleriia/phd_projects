@@ -72,8 +72,8 @@ Pak byli byli jednotlive smiles prevedene na morganuv fingerprint r=3,  nBit = 2
 
 Podle nas nejlepsi vyber scaffoldu budou CSK, nejsou moc specificke jako murco a generic.
 Podle vypocitaneho Tanimotova distance a poctu sloucenin a poctu uniatnich caffoldu csk zvolili jsme:
-* pro jaderny receptor: **Glucocorticoid receptor**
-* pro proteazu: **Leukocyte elastase**
+* pro jaderny receptor: **Glucocorticoid receptor** 25_pic50.csv
+* pro proteazu: **Leukocyte elastase**  235_pic50.csv
 
 Data sety z vypocitanou hodnotou Tanimota similarity a unikatnich scaffoldu jsou v slozce *results/results_data_for_chosen_perfect_target/*
 * nuclear_IC50_value_for_Tanimot_similarity.csv
