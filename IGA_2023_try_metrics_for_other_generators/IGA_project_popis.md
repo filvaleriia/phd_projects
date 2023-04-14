@@ -87,18 +87,102 @@ Data sety ktere byli pouzite a jsou ulozene v slozce *results/results_data_for_c
 tyhle ctyri obsahuji vypocitane jednotlive scaffoldy (murco, generic, csk)
 
 
-
-
 IC50:
 
 
+# Uprava 14.4.23
 
 ## Rozdeleni na testovaci a trenovaci sady
+Rozdeleni dat je napsano v jupyter *priprava_dat.ipynb*
+Pro rozdeleni na jednotlive shluky byla pouzita metoda KMedoids, je to podobna metoda jako KMeans ale da se v KMedoids zmenit distancni funkci a misto mean pouziva median
+Protoze chceme rozdelit dataset na jednotlive shliky s pouzitiv Jaccardove distance (1-Tanimotova similarita). A protoze to neslo zmenit v KMeans, kde je pouzita Euclidovska vzdalenost a ji nejde zmenit.
+Taky jsem zkousela pouzit jinou klastrovaci metodu napriklad Rdkit metodu klastrovani, ktera bohuzel rozdelila shluky na 5, ale ten prvni shluk obsahoval 95% vsech dat a my tedy potrebujeme podobne shluky
+Dalsi bode byla zkousena balicek *pyclustering*, protoze tam jde napsat vlastni distancni funkci, ale bohuzel jsem objevila ze to nefunguje protoze u prepoctu venter ty bitove vektory zacinaji byt odlisne delky, coz znamna ze mozna maji problem ve zdrojovem kode
+Takze bylo rozhodnuto pouziti KMedoids pro rozdeleni na 5 shluku
 
+Protoze potrebujeme pomerne podobnou velikost shluku, udelali jsme trochu cheating. Takze tim ze velikost shluku zavisi na random_state takze zkusila jsem 1500 ruznych random state a nasla jsem ten random state kde velikost shluku je co nejvic podobna
+Je to pro gluccocorticoidni receptor:
+* Random_state = 1160
+* a Velikost jednotlivych shluku je 42,36,42,40,46
+Rozdeleni na jednotlive shluky je ulozeno v *data/input_data/glucocor_recp_split_to_clusters_using_KMedoids.csv*
+
+Takze rozdeleni na trenovaci a testovaci shluky:
+1. Dissimilarity (exploracni vlastnost):
+Takze data byli rozdeleny na 5 shluku a pokazde byl jeden shluk dan bokem jako testovaci data
+jednotlive data jsou ulozene v slozce *data/input_data/*
+Vzdycky u trenovaci a testovaci mnozine je napsano dis a cislo 0-4(shluk ktery byl dan bokem)
+* Pro data pro Molpher *data/input_data* trenovaci
+    - input_Molpher_glucocor_dis_0.csv
+    - input_Molpher_glucocor_dis_1.csv
+    - input_Molpher_glucocor_dis_2.csv
+    - input_Molpher_glucocor_dis_3.csv
+    - input_Molpher_glucocor_dis_4.csv
+* Pro generatory bez ID *data/input_data* trenovaci
+    - input_gener_glucocor_dis_0.csv
+    - input_gener_glucocor_dis_1.csv
+    - input_gener_glucocor_dis_2.csv
+    - input_gener_glucocor_dis_3.csv
+    - input_gener_glucocor_dis_4.csv
+* Pro generatory s ID trenovaci
+    - input_gener_glucocor_with_ID_dis_0.csv
+    - input_gener_glucocor_with_ID_dis_1.csv
+    - input_gener_glucocor_with_ID_dis_2.csv
+    - input_gener_glucocor_with_ID_dis_3.csv
+    - input_gener_glucocor_with_ID_dis_4.csv
+* Pro generatory bez ID testovaci:
+    - input_test_glucocor_dis_0.csv
+    - input_test_glucocor_dis_1.csv
+    - input_test_glucocor_dis_2.csv
+    - input_test_glucocor_dis_3.csv
+    - input_test_glucocor_dis_4.csv
+* Pro generatory s ID testovaci:
+    - input_test_glucocor_with_ID_dis_0.csv
+    - input_test_glucocor_with_ID_dis_1.csv
+    - input_test_glucocor_with_ID_dis_2.csv
+    - input_test_glucocor_with_ID_dis_3.csv
+    - input_test_glucocor_with_ID_dis_4.csv
+
+2. Simmilarity (exploatacni vlastnosti):
+Abychom udelali tenhle test takze byli vzate s kazdeho shluku 20% do testovaci mnoziny
+* Pro data pro Molpher *data/input_data* trenovaci
+    - input_Molpher_glucocor_sim_0.csv
+    - input_Molpher_glucocor_sim_1.csv
+    - input_Molpher_glucocor_sim_2.csv
+    - input_Molpher_glucocor_sim_3.csv
+    - input_Molpher_glucocor_sim_4.csv
+* Pro generatory bez ID *data/input_data* trenovaci
+    - input_gener_glucocor_sim_0.csv
+    - input_gener_glucocor_sim_1.csv
+    - input_gener_glucocor_sim_2.csv
+    - input_gener_glucocor_sim_3.csv
+    - input_gener_glucocor_sim_4.csv
+* Pro generatory s ID trenovaci
+    - input_gener_glucocor_with_ID_sim_0.csv
+    - input_gener_glucocor_with_ID_sim_1.csv
+    - input_gener_glucocor_with_ID_sim_2.csv
+    - input_gener_glucocor_with_ID_sim_3.csv
+    - input_gener_glucocor_with_ID_sim_4.csv
+* Pro generatory bez ID testovaci:
+    - input_test_glucocor_sim_0.csv
+    - input_test_glucocor_sim_1.csv
+    - input_test_glucocor_sim_2.csv
+    - input_test_glucocor_sim_3.csv
+    - input_test_glucocor_sim_4.csv
+* Pro generatory s ID testovaci:
+    - input_test_glucocor_with_ID_sim_0.csv
+    - input_test_glucocor_with_ID_sim_1.csv
+    - input_test_glucocor_with_ID_sim_2.csv
+    - input_test_glucocor_with_ID_sim_3.csv
+    - input_test_glucocor_with_ID_sim_4.csv
 
 ## Beh jednotlivych generatoru
-
+- Tak byl pousten vypocet Molpher na lich-compute a na metacentru
+s CPU=8, MEM = 14GB, wall_time = 48
+- Byl zkousen Wim generators ale funguje hodne spatne
 
 ## Vypocet jednotlivych metrik
+Pro vypocet jednotlivych metric byl napsan module je to v slozce *IGA_2023_try_metrics_for_other_generators/metrics_.py*
+A pak byl importovan do jupyter notebook *calculate_the_metrics.ipynb*
+
 
 ## Statisticka analyza dat a vizualizace
