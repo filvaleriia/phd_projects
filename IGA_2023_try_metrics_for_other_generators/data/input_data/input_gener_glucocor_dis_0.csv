@@ -346,13 +346,11 @@ CC[C@@]12C[C@@](C)(O)[C@](O)(c3cccnc3)C[C@H]1CCc1cc(O)ccc12
 CC[C@@]12C[C@](C)(O)[C@](O)(c3ccccc3)C[C@H]1CCc1cc(O)ccc12
 CC[C@@]12C[C@@](C)(O)[C@](O)(c3ccccc3)C[C@H]1CC(O)c1cc(O)ccc12
 C=CCOC(C)C1=CC(C)(C)Nc2ccc(-c3cc(F)ccc3OC)cc21
-C=CCOC(C)C1=CC(C)(C)Nc2ccc(-c3cc(F)ccc3OC)cc21
 OC(c1ccnc(Cl)c1)(c1ccc2c(cnn2-c2ccc(F)cc2)c1)C(F)(F)F
 N#Cc1cc(C(O)(c2ccc3c(cnn3-c3ccc(F)cc3)c2)C(F)(F)F)ccc1F
 OC(c1ccc2c(cnn2-c2ccc(F)cc2)c1)(c1ccccc1Cl)C(F)(F)F
 OC(c1ccc(F)c(Cl)c1)(c1ccc2c(cnn2-c2ccc(F)cc2)c1)C(F)(F)F
 Cc1cccc(C(O)(c2ccc3c(cnn3-c3ccc(F)cc3)c2)C(F)(F)F)c1
-N#Cc1cc(C(O)(c2ccc3c(cnn3-c3ccc(F)cc3)c2)C(F)(F)F)ccc1F
 OC(c1ccc2c(cnn2-c2ccc(F)cc2)c1)(c1ccccc1F)C(F)(F)F
 Cc1cc(C(O)(c2ccc3c(cnn3-c3ccc(F)cc3)c2)C(F)(F)F)ccc1F
 OC(c1cccc(Cl)c1)(c1ccc2c(cnn2-c2ccc(F)cc2)c1)C(F)(F)F
