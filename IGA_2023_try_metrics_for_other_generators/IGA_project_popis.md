@@ -184,5 +184,7 @@ s CPU=8, MEM = 14GB, wall_time = 48
 Pro vypocet jednotlivych metric byl napsan module je to v slozce *IGA_2023_try_metrics_for_other_generators/metrics_.py*
 A pak byl importovan do jupyter notebook *calculate_the_metrics.ipynb*
 
-
+V DrugEx je pouzivan model QSAR pro transfer learnign, takze je tam pouzita hodnota p_chebl_value pro korekci navrzenych sloucenin, takze Martin pouziva Median hodnotu kdyz jsou duplicitni hodnoty v datech a to me zarazilo takze jsem zacala zkoumat co je vlastne lepsi pouzit, takze jsem spocitala hodnoty mean a median pro svoje data a objevila jsem ze Max se lisi na 0.3 a Min -0.66 takze ta zmena neni ani na 1 lisi od sebe. Takze puvodne ve skriptu Wima byl pouzity mean, takze ho necham protoze v danem pripade ta zmena je zanedbatelna
+Takze u stahovani dat u funkce split_and_clean byl pouzity mean u duplicitnich hodnotach.
+Jeste nasledovne vzniklo pri zpracovani dat k duplicitnim hodnotam protoze treba data byli stazene se soli a po odstraneni ty soli ty data byli duplicitni podle SMILES ale se lisili podle INCHI, takze u tech dat byl vzat taky mean a jedna hodnota byla odstranena.
 ## Statisticka analyza dat a vizualizace
