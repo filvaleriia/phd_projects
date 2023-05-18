@@ -188,3 +188,5 @@ V DrugEx je pouzivan model QSAR pro transfer learnign, takze je tam pouzita hodn
 Takze u stahovani dat u funkce split_and_clean byl pouzity mean u duplicitnich hodnotach.
 Jeste nasledovne vzniklo pri zpracovani dat k duplicitnim hodnotam protoze treba data byli stazene se soli a po odstraneni ty soli ty data byli duplicitni podle SMILES ale se lisili podle INCHI, takze u tech dat byl vzat taky mean a jedna hodnota byla odstranena.
 ## Statisticka analyza dat a vizualizace
+
+cat *lich-compute.vscht.cz/run_class_*/out.csv > out_all.csv

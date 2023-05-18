@@ -34,30 +34,35 @@ def convert_to_scaffold(df):
     delete_element = 0
 
     for x in range(len(df)):
-        remover = SaltRemover()
-        res = remover.StripMol(Chem.MolFromSmiles(df.loc[x][0]))
-        df.loc[x][0] = Chem.MolToSmiles(res)
-        if NumAromaticRings(Chem.MolFromSmiles(df.loc[x][0])) == 0 and\
-            NumAliphaticRings(Chem.MolFromSmiles(df.loc[x][0])) == 0:
-            dff = df.drop([x])
-            delete_element = 1
 
-        if delete_element != 1:
+        try:
+            Chem.MolFromSmiles(df.loc[x][0])
+            remover = SaltRemover()
+            res = remover.StripMol(Chem.MolFromSmiles(df.loc[x][0]))
+            df.loc[x][0] = Chem.MolToSmiles(res)
+            if NumAromaticRings(Chem.MolFromSmiles(df.loc[x][0])) == 0 and\
+                NumAliphaticRings(Chem.MolFromSmiles(df.loc[x][0])) == 0:
+                dff = df.drop([x])
+                delete_element = 1
 
-            try:
-                a.append(MurckoScaffoldSmiles(\
-                                         Chem.MolToSmiles(MakeScaffoldGeneric\
-                                       (Chem.MolFromSmiles(df.loc[x][0])))))
-            except:
-                print("Faild to create scaffold_csk")
-                print("Index",x)
-                print(df.loc[x][0])                
+            if delete_element != 1:
+
                 try:
-                    mol = MakeScaffoldGeneric_fixed(Chem.MolFromSmiles(df.loc[x][0]))
-                    a.append(MurckoScaffoldSmiles(Chem.MolToSmiles(mol)))
+                    a.append(MurckoScaffoldSmiles(\
+                                             Chem.MolToSmiles(MakeScaffoldGeneric\
+                                           (Chem.MolFromSmiles(df.loc[x][0])))))
                 except:
-                    df = df.drop([x])
-        delete_element = 0
+                    print("Faild to create scaffold_csk")
+                    print("Index",x)
+                    print(df.loc[x][0])                
+                    try:
+                        mol = MakeScaffoldGeneric_fixed(Chem.MolFromSmiles(df.loc[x][0]))
+                        a.append(MurckoScaffoldSmiles(Chem.MolToSmiles(mol)))
+                    except:
+                        df = df.drop([x])
+            delete_element = 0
+        except:
+            print("Nepovedlo se")
 
     dff = pd.DataFrame(data = a)
     return dff
