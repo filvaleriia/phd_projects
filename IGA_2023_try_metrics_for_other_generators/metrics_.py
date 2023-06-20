@@ -15,6 +15,8 @@ from rdkit.Chem.Lipinski import NumAliphaticRings
 from rdkit.Chem.Lipinski import NumAromaticHeterocycles
 from rdkit.Chem.Lipinski import NumAromaticRings
 from rdkit.Chem.SaltRemover import SaltRemover
+from rdkit.Chem import Draw
+
 
 #Funkce pro opravu problemu z SF5- prevede na CF3
 #funkce od Wima
@@ -35,34 +37,46 @@ def convert_to_scaffold(df):
 
     for x in range(len(df)):
 
-        try:
-            Chem.MolFromSmiles(df.loc[x][0])
-            remover = SaltRemover()
-            res = remover.StripMol(Chem.MolFromSmiles(df.loc[x][0]))
-            df.loc[x][0] = Chem.MolToSmiles(res)
-            if NumAromaticRings(Chem.MolFromSmiles(df.loc[x][0])) == 0 and\
-                NumAliphaticRings(Chem.MolFromSmiles(df.loc[x][0])) == 0:
-                dff = df.drop([x])
-                delete_element = 1
-
-            if delete_element != 1:
-
+        Chem.MolFromSmiles(df.loc[x][0])
+        remover = SaltRemover()
+        res = remover.StripMol(Chem.MolFromSmiles(df.loc[x][0]))
+        df.loc[x][0] = Chem.MolToSmiles(res)
+        if NumAromaticRings(Chem.MolFromSmiles(df.loc[x][0])) == 0 and\
+            NumAliphaticRings(Chem.MolFromSmiles(df.loc[x][0])) == 0:
+            dff = df.drop([x])
+            delete_element = 1
+        if delete_element != 1:
+            try:
+                a.append(MurckoScaffoldSmiles(\
+                                         Chem.MolToSmiles(MakeScaffoldGeneric\
+                                       (Chem.MolFromSmiles(df.loc[x][0])))))
+            except:
+                print("Faild to create scaffold_csk")
+                print("Index",x)
+                print(df.loc[x][0])                
                 try:
-                    a.append(MurckoScaffoldSmiles(\
-                                             Chem.MolToSmiles(MakeScaffoldGeneric\
-                                           (Chem.MolFromSmiles(df.loc[x][0])))))
+                    mol = MakeScaffoldGeneric_fixed(Chem.MolFromSmiles(df.loc[x][0]))
+                    a.append(MurckoScaffoldSmiles(Chem.MolToSmiles(mol)))
                 except:
-                    print("Faild to create scaffold_csk")
-                    print("Index",x)
-                    print(df.loc[x][0])                
-                    try:
-                        mol = MakeScaffoldGeneric_fixed(Chem.MolFromSmiles(df.loc[x][0]))
-                        a.append(MurckoScaffoldSmiles(Chem.MolToSmiles(mol)))
-                    except:
-                        df = df.drop([x])
-            delete_element = 0
+                    df = df.drop([x])
+        delete_element = 0
+
+    dff = pd.DataFrame(data = a)
+    return dff
+
+def convert_to_scaffold_(df):
+    a = []
+    print("Convert_")
+    for x in range(len(df)):
+        try:
+            a.append(MurckoScaffoldSmiles(\
+                                     Chem.MolToSmiles(MakeScaffoldGeneric\
+                                   (Chem.MolFromSmiles(df.loc[x][0])))))
         except:
-            print("Nepovedlo se")
+            print("Faild to create scaffold_csk")
+            print("Index",x)
+            print(df.loc[x][0])
+
 
     dff = pd.DataFrame(data = a)
     return dff
@@ -86,6 +100,8 @@ class Metrics:
         self.generated_compounds = []
         self.test_set = []
         self.var = var
+        self.unique_compounds = []
+        self.unique_input = []
     
     def load(self,filepath_generated_com, filepath_test_set):
         #nacitani vstupu
@@ -104,10 +120,18 @@ class Metrics:
         #print(len(self.generated_compounds))
         #print(len(self.test_set))
 
+    def scaffolds_unique(self,df_generated,df_input):
+        
+        return df_generated, df_input
+    
+    
     def main_function(self,df_generated, df_input):
 
         df_input = convert_to_scaffold(df_input)
         df_generated = convert_to_scaffold(df_generated)
+
+        
+
         unique_compounds_in_whole_generated_set = df_generated[0].unique()
         unique_input = df_input[0].unique()
 
@@ -138,24 +162,31 @@ class Metrics:
         print("aSeScR",asescr)
         print("SeScY * SeScR: ", sescry)
 
+
     def main_function_return(self,df_generated, df_input):
 
-        df_input = convert_to_scaffold(df_input)
-        df_generated = convert_to_scaffold(df_generated)
+        df_input = convert_to_scaffold_(df_input)
+        df_generated = convert_to_scaffold_(df_generated)
 
-        unique_compounds_in_whole_generated_set = df_generated[0].unique()
+        self.unique_compounds, self.unique_input = self.scaffolds_unique(df_generated, df_input)
+
+
+
+        unique_scaffolds_in_whole_generated_set = df_generated[0].unique()
         unique_input = df_input[0].unique()
 
+        #df obsahuje tri sloupce a unique_input pocet radku. kde sloupec 1 obsahuje count tRS a 2 obsahuje uniqe RS
         df = add_columns_same_like_input_function(df_generated, unique_input)
 
+        #df1 obsahuje tri sloupce a df_input/test_set pocet radku. kde sloupec 1 obsahuje count tRS a 2 obsahuje uniqe RS
         df1 = add_columns_same_like_input_function(df_generated, df_input)
 
-        uniq_compounds = len(unique_compounds_in_whole_generated_set)
-        set_size = len(df_generated)
-        sescy = len(unique_compounds_in_whole_generated_set)/len(df_generated)
-        sescr = df[2].sum()/len(unique_compounds_in_whole_generated_set)
+        ns = len(unique_scaffolds_in_whole_generated_set)
+        ss = len(df_generated)
+        sescy = ns/ss
+        sescr = df[2].sum()/ns
         sescry = sescy*sescr
-        asescr = df[1].sum()/len(df_generated)
+        asescr = df[1].sum()/ss
         
         try:
             tpra = df[2].value_counts()[1]/len(df)
@@ -176,8 +207,7 @@ class Metrics:
             tprar_text = f"{0}/{len(df1)}"
 
     
-        return self.var , uniq_compounds,set_size,tpra_text,tpra, tprar_text,tprar,sescy,sescr, sescry,asescr
-
+        return self.var , ns,ss,tpra_text,tpra, tprar_text,tprar,sescy,sescr, sescry,asescr
 
     
 
@@ -190,6 +220,10 @@ class Metrics:
         res = self.main_function_return(self.generated_compounds, self.test_set)
 
         return res
+    
+
+    def unique(self):
+        return self.unique_compounds, self.unique_input
 
     
        
